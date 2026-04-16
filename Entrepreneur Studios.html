@@ -3,100 +3,721 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Entrepreneur Studios | Etsy Products & Pinterest API App</title>
-    <meta name="description" content="Entrepreneur Studios creates and sells print-on-demand gifts, mugs, shirts, totes, journals, and wall art through Etsy.">
+    <title>Entrepreneur Studios | Storefront</title>
+    <meta name="description" content="Shop the full Entrepreneur Studios catalog with mugs, shirts, tote bags, journals, and wall art inspired by bestselling gift niches.">
     <style>
         :root {
-            --bg: #0f172a;
-            --card: #111827;
-            --muted: #94a3b8;
-            --text: #e5e7eb;
-            --brand: #f59e0b;
-            --line: #1f2937;
+            --bg: #08111f;
+            --bg-soft: #0f1c33;
+            --panel: rgba(10, 17, 31, 0.82);
+            --panel-solid: #0f172a;
+            --card: #101b31;
+            --line: rgba(148, 163, 184, 0.18);
+            --text: #e5eefc;
+            --muted: #9db0ce;
+            --brand: #f5b544;
+            --brand-deep: #e68a00;
+            --success: #34d399;
+            --shadow: 0 18px 48px rgba(0, 0, 0, 0.28);
         }
         * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
         body {
             margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background: linear-gradient(180deg, #0b1220 0%, var(--bg) 100%);
+            font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             color: var(--text);
+            background:
+                radial-gradient(circle at top left, rgba(245, 181, 68, 0.16), transparent 30%),
+                radial-gradient(circle at top right, rgba(52, 211, 153, 0.10), transparent 26%),
+                linear-gradient(180deg, #06101e 0%, #0a1325 42%, #091120 100%);
             line-height: 1.6;
         }
-        .container { max-width: 1080px; margin: 0 auto; padding: 24px; }
-        header { padding: 28px 0 8px; }
-        h1 { margin: 0 0 8px; font-size: clamp(1.8rem, 3.2vw, 2.6rem); color: #fff; }
-        .sub { color: var(--muted); max-width: 760px; margin: 0 0 18px; }
-        .cta-row { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; }
-        .btn {
-            display: inline-block;
-            text-decoration: none;
-            border-radius: 10px;
+        a { color: inherit; }
+        .shell {
+            max-width: 1380px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            padding: 14px 0 24px;
+        }
+        .brand {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .brand-kicker {
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            font-size: 0.75rem;
+            color: var(--brand);
+        }
+        .brand-title {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: #fff;
+        }
+        .top-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .ghost-link, .cta, .secondary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 44px;
             padding: 11px 16px;
-            font-weight: 600;
-            border: 1px solid transparent;
+            border-radius: 999px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: transform 0.18s ease, opacity 0.18s ease, border-color 0.18s ease;
         }
-        .btn-primary { background: var(--brand); color: #111827; }
-        .btn-secondary { background: transparent; color: #fbbf24; border-color: #92400e; }
-        .panel {
-            background: rgba(17, 24, 39, 0.92);
+        .ghost-link {
             border: 1px solid var(--line);
-            border-radius: 14px;
-            padding: 18px;
-            margin: 14px 0;
+            color: var(--muted);
+            background: rgba(255, 255, 255, 0.02);
         }
-        .panel h2 { margin: 0 0 10px; font-size: 1.2rem; color: #fff; }
-        .small { color: var(--muted); font-size: 0.95rem; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; }
-        .card { border: 1px solid var(--line); border-radius: 12px; padding: 14px; background: var(--card); }
-        .card h3 { font-size: 0.98rem; margin: 0 0 10px; color: #fff; }
-        .link { color: #fbbf24; text-decoration: none; font-weight: 600; }
-        footer { padding: 18px 0 28px; color: var(--muted); font-size: 0.94rem; }
-        ul { margin: 8px 0 0 20px; padding: 0; }
-        a { color: #fbbf24; }
+        .cta {
+            color: #111827;
+            background: linear-gradient(135deg, #ffd27a, var(--brand));
+            box-shadow: var(--shadow);
+        }
+        .secondary {
+            color: #f8d593;
+            border: 1px solid rgba(245, 181, 68, 0.35);
+            background: rgba(245, 181, 68, 0.08);
+        }
+        .ghost-link:hover, .cta:hover, .secondary:hover { transform: translateY(-1px); }
+
+        .hero {
+            display: grid;
+            grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.9fr);
+            gap: 24px;
+            align-items: stretch;
+        }
+        .hero-copy, .hero-panel, .controls, .store-section, .footer {
+            border: 1px solid var(--line);
+            background: var(--panel);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+        }
+        .hero-copy {
+            padding: 34px;
+            overflow: hidden;
+        }
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(245, 181, 68, 0.12);
+            color: #f6d18e;
+            font-weight: 700;
+            font-size: 0.85rem;
+            margin-bottom: 16px;
+        }
+        h1 {
+            margin: 0;
+            font-size: clamp(2.25rem, 4vw, 4.35rem);
+            line-height: 1.05;
+            letter-spacing: -0.03em;
+            color: #fff;
+        }
+        .hero p {
+            color: var(--muted);
+            font-size: 1.05rem;
+            max-width: 760px;
+            margin: 18px 0 0;
+        }
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 24px;
+        }
+        .stat-row {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 28px;
+        }
+        .stat {
+            padding: 16px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.035);
+            border: 1px solid rgba(148, 163, 184, 0.12);
+        }
+        .stat strong {
+            display: block;
+            font-size: 1.5rem;
+            color: #fff;
+        }
+        .stat span {
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+        .hero-panel {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            justify-content: center;
+        }
+        .hero-panel h2 {
+            margin: 0;
+            font-size: 1.15rem;
+            color: #fff;
+        }
+        .hero-panel p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 0.97rem;
+        }
+        .hero-list {
+            margin: 0;
+            padding-left: 18px;
+            color: var(--muted);
+        }
+        .hero-list li { margin-bottom: 10px; }
+        .compliance {
+            padding: 14px 16px;
+            border-radius: 18px;
+            background: rgba(52, 211, 153, 0.08);
+            border: 1px solid rgba(52, 211, 153, 0.2);
+            color: #d7ffee;
+            font-size: 0.95rem;
+        }
+
+        .controls {
+            margin-top: 24px;
+            padding: 20px;
+        }
+        .controls-grid {
+            display: grid;
+            grid-template-columns: 1.4fr repeat(3, minmax(150px, 0.5fr));
+            gap: 12px;
+        }
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .field label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+        .field input, .field select {
+            width: 100%;
+            min-height: 48px;
+            border-radius: 14px;
+            border: 1px solid var(--line);
+            background: rgba(2, 6, 23, 0.48);
+            color: var(--text);
+            padding: 0 14px;
+            font-size: 1rem;
+            outline: none;
+        }
+        .field input::placeholder { color: #7f8da7; }
+        .pill-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 16px;
+        }
+        .pill {
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--muted);
+            padding: 9px 14px;
+            border-radius: 999px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+        .pill.active {
+            color: #fff;
+            background: rgba(245, 181, 68, 0.14);
+            border-color: rgba(245, 181, 68, 0.35);
+        }
+        .results-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-top: 18px;
+            color: var(--muted);
+            font-size: 0.96rem;
+        }
+
+        .store-section {
+            margin-top: 22px;
+            padding: 22px;
+        }
+        .section-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+        .section-head h2 {
+            margin: 0;
+            font-size: 1.35rem;
+            color: #fff;
+        }
+        .section-head p {
+            margin: 6px 0 0;
+            color: var(--muted);
+        }
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
+            gap: 18px;
+        }
+        .product-card {
+            display: flex;
+            flex-direction: column;
+            min-height: 100%;
+            overflow: hidden;
+            border-radius: 22px;
+            border: 1px solid rgba(148, 163, 184, 0.14);
+            background: linear-gradient(180deg, rgba(18, 27, 48, 0.98), rgba(11, 19, 35, 0.96));
+            box-shadow: 0 18px 30px rgba(0, 0, 0, 0.22);
+        }
+        .product-image-wrap {
+            aspect-ratio: 1 / 1;
+            background: linear-gradient(180deg, #11203a, #0b1528);
+            overflow: hidden;
+            position: relative;
+        }
+        .product-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .image-badge {
+            position: absolute;
+            left: 12px;
+            top: 12px;
+            padding: 7px 10px;
+            border-radius: 999px;
+            background: rgba(8, 17, 31, 0.72);
+            color: #fff;
+            font-size: 0.76rem;
+            font-weight: 700;
+            border: 1px solid rgba(255,255,255,0.12);
+        }
+        .product-body {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            flex: 1;
+        }
+        .meta-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            align-items: center;
+        }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(245, 181, 68, 0.12);
+            color: #ffd994;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+        .price {
+            font-weight: 800;
+            color: #fff;
+            font-size: 1rem;
+        }
+        .product-title {
+            margin: 0;
+            font-size: 1rem;
+            line-height: 1.35;
+            color: #fff;
+        }
+        .product-desc {
+            margin: 0;
+            color: var(--muted);
+            font-size: 0.92rem;
+        }
+        .product-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .tag {
+            font-size: 0.75rem;
+            color: #c9d7ef;
+            background: rgba(148, 163, 184, 0.1);
+            border: 1px solid rgba(148, 163, 184, 0.12);
+            border-radius: 999px;
+            padding: 5px 9px;
+        }
+        .card-actions {
+            margin-top: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            padding-top: 4px;
+        }
+        .micro {
+            color: var(--muted);
+            font-size: 0.82rem;
+        }
+        .shop-btn {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 40px;
+            padding: 0 14px;
+            border-radius: 999px;
+            background: #fff;
+            color: #0f172a;
+            text-decoration: none;
+            font-weight: 800;
+        }
+        .empty-state {
+            padding: 42px 20px;
+            text-align: center;
+            color: var(--muted);
+            border: 1px dashed rgba(148, 163, 184, 0.2);
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .footer {
+            margin: 22px 0 18px;
+            padding: 20px 22px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 14px;
+            color: var(--muted);
+        }
+        .footer a { color: #f8d593; text-decoration: none; }
+
+        @media (max-width: 1080px) {
+            .hero { grid-template-columns: 1fr; }
+            .controls-grid { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 700px) {
+            .shell { padding: 16px; }
+            .topbar, .results-bar, .section-head, .footer { flex-direction: column; align-items: stretch; }
+            .controls-grid, .stat-row { grid-template-columns: 1fr; }
+            .hero-copy, .hero-panel, .controls, .store-section, .footer { border-radius: 20px; }
+            .hero-copy { padding: 24px; }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Entrepreneur Studios</h1>
-            <p class="sub">Entrepreneur Studios is an independent online brand that designs and sells print-on-demand products through Etsy, including mugs, shirts, tote bags, journals, and wall art. This website represents our business and Pinterest API app.</p>
-            <div class="cta-row">
-                <a class="btn btn-primary" href="https://www.etsy.com/shop/EntrepreneurStudios" target="_blank" rel="noopener noreferrer">Visit Etsy Shop</a>
-                <a class="btn btn-secondary" href="/Entrepreneur%20Studios%20privacy-policy">Privacy Policy</a>
+    <div class="shell">
+        <nav class="topbar">
+            <div class="brand">
+                <span class="brand-kicker">Entrepreneur Studios</span>
+                <span class="brand-title">Professional Gift Storefront</span>
             </div>
-        </header>
+            <div class="top-links">
+                <a class="ghost-link" href="#store">Shop All Products</a>
+                <a class="ghost-link" href="/entrepreneur-studios-privacy-policy.html">Privacy Policy</a>
+                <a class="cta" href="https://www.etsy.com/shop/EntrepreneurStudios" target="_blank" rel="noopener noreferrer">Open Etsy Shop</a>
+            </div>
+        </nav>
 
-        <section class="panel">
-            <h2>About This Site</h2>
-            <p class="small">Main URL for app review: <strong>https://djtaylor333.github.io/Entrepreneur%20Studios</strong><br>This site is publicly accessible and includes our business overview, product links, and privacy disclosures.</p>
+        <section class="hero">
+            <div class="hero-copy">
+                <div class="eyebrow">Curated gifts across 226 live listings</div>
+                <h1>Shop Entrepreneur Studios like a real online storefront.</h1>
+                <p>
+                    Browse mugs, wall art, notebooks, shirts, and tote bags across retirement, book lover, nurse, teacher,
+                    yoga, wine, coffee, pet lover, and empowerment niches. Every card below pulls directly from the current Printify catalog.
+                </p>
+                <div class="hero-actions">
+                    <a class="cta" href="#store">Browse Collection</a>
+                    <a class="secondary" href="https://www.etsy.com/shop/EntrepreneurStudios" target="_blank" rel="noopener noreferrer">Visit Etsy Store</a>
+                </div>
+                <div class="stat-row" id="statsRow">
+                    <div class="stat"><strong>226</strong><span>Live products</span></div>
+                    <div class="stat"><strong>5</strong><span>Core product types</span></div>
+                    <div class="stat"><strong>12+</strong><span>Gift niches</span></div>
+                </div>
+            </div>
+
+            <aside class="hero-panel">
+                <h2>Store highlights</h2>
+                <p>This storefront is designed to present your catalog cleanly for shoppers and platform reviewers.</p>
+                <ul class="hero-list">
+                    <li>Full product grid with real mockup images from your current catalog.</li>
+                    <li>Live search, category filtering, and product type filtering.</li>
+                    <li>Direct product discovery links into your Etsy shop.</li>
+                    <li>Professional visual treatment suitable for business review and customer browsing.</li>
+                </ul>
+                <div class="compliance">
+                    Entrepreneur Studios uses the Pinterest API for marketing workflows and is not endorsed by or affiliated with Pinterest.
+                </div>
+            </aside>
         </section>
 
-        <section class="panel">
-            <h2>Featured Products on Etsy</h2>
-            <p class="small">Browse products currently sold by Entrepreneur Studios.</p>
-            <div class="grid">
-                <article class="card"><h3>Funny Retirement Notebook</h3><a class="link" target="_blank" rel="noopener noreferrer" href="https://www.etsy.com/shop/EntrepreneurStudios?search_query=Funny+Retirement+Notebook">View on Etsy</a></article>
-                <article class="card"><h3>Happily Retired Wall Art</h3><a class="link" target="_blank" rel="noopener noreferrer" href="https://www.etsy.com/shop/EntrepreneurStudios?search_query=Happily+Retired+Wall+Art">View on Etsy</a></article>
-                <article class="card"><h3>Funny Hiking T-Shirt</h3><a class="link" target="_blank" rel="noopener noreferrer" href="https://www.etsy.com/shop/EntrepreneurStudios?search_query=Funny+Hiking+T-Shirt">View on Etsy</a></article>
-                <article class="card"><h3>The Mountains Are Calling Mug</h3><a class="link" target="_blank" rel="noopener noreferrer" href="https://www.etsy.com/shop/EntrepreneurStudios?search_query=The+Mountains+Are+Calling+Mug">View on Etsy</a></article>
-                <article class="card"><h3>Yoga Journal</h3><a class="link" target="_blank" rel="noopener noreferrer" href="https://www.etsy.com/shop/EntrepreneurStudios?search_query=Yoga+Journal">View on Etsy</a></article>
-                <article class="card"><h3>Namaste In Bed Mug</h3><a class="link" target="_blank" rel="noopener noreferrer" href="https://www.etsy.com/shop/EntrepreneurStudios?search_query=Namaste+In+Bed+Mug">View on Etsy</a></article>
+        <section class="controls" id="store">
+            <div class="controls-grid">
+                <div class="field">
+                    <label for="searchInput">Search products</label>
+                    <input id="searchInput" type="search" placeholder="Search by title, niche, tag, or product type">
+                </div>
+                <div class="field">
+                    <label for="typeSelect">Product type</label>
+                    <select id="typeSelect">
+                        <option value="All">All types</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="sortSelect">Sort by</label>
+                    <select id="sortSelect">
+                        <option value="featured">Featured</option>
+                        <option value="price-asc">Price: Low to high</option>
+                        <option value="price-desc">Price: High to low</option>
+                        <option value="title">Title: A to Z</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="imageSelect">Image quality</label>
+                    <select id="imageSelect">
+                        <option value="all">All image counts</option>
+                        <option value="multi">2+ product images</option>
+                        <option value="single">1 image only</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="pill-row" id="nichePills"></div>
+
+            <div class="results-bar">
+                <div id="resultsSummary">Loading storefront catalog...</div>
+                <div>All products open in your Etsy shop.</div>
             </div>
         </section>
 
-        <section class="panel">
-            <h2>Pinterest API Disclosure</h2>
-            <ul>
-                <li>Entrepreneur Studios uses the Pinterest API to publish and analyze marketing content related to our Etsy products.</li>
-                <li>Entrepreneur Studios is not endorsed by, directly affiliated with, maintained by, authorized by, or sponsored by Pinterest.</li>
-                <li>For data handling details, please review our <a href="/Entrepreneur%20Studios%20privacy-policy">Privacy Policy</a>.</li>
-            </ul>
+        <section class="store-section">
+            <div class="section-head">
+                <div>
+                    <h2>All Listings</h2>
+                    <p>Professional storefront view powered by your live catalog export.</p>
+                </div>
+            </div>
+            <div class="product-grid" id="productGrid"></div>
         </section>
 
-        <footer>
-            Contact: <a href="mailto:djtaylor333@gmail.com">djtaylor333@gmail.com</a><br>
-            © 2026 Entrepreneur Studios
+        <footer class="footer">
+            <div>
+                Contact: <a href="mailto:djtaylor333@gmail.com">djtaylor333@gmail.com</a><br>
+                Privacy: <a href="/entrepreneur-studios-privacy-policy.html">Entrepreneur Studios Privacy Policy</a>
+            </div>
+            <div>
+                © 2026 Entrepreneur Studios<br>
+                Storefront main URL: https://djtaylor333.github.io/Entrepreneur%20Studios
+            </div>
         </footer>
     </div>
+
+    <script>
+        const state = {
+            products: [],
+            niche: 'All',
+            search: '',
+            type: 'All',
+            sort: 'featured',
+            imageFilter: 'all',
+        };
+
+        const productGrid = document.getElementById('productGrid');
+        const nichePills = document.getElementById('nichePills');
+        const resultsSummary = document.getElementById('resultsSummary');
+        const typeSelect = document.getElementById('typeSelect');
+        const sortSelect = document.getElementById('sortSelect');
+        const imageSelect = document.getElementById('imageSelect');
+        const searchInput = document.getElementById('searchInput');
+        const statsRow = document.getElementById('statsRow');
+
+        function escapeHtml(value) {
+            return String(value ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function parsePrice(value) {
+            const parsed = Number(String(value || '').replace(/[^0-9.]/g, ''));
+            return Number.isFinite(parsed) ? parsed : 0;
+        }
+
+        function truncate(text, max = 108) {
+            const clean = String(text || '').trim();
+            return clean.length > max ? `${clean.slice(0, max).trim()}…` : clean;
+        }
+
+        function setStats(products) {
+            const types = new Set(products.map((item) => item.type).filter(Boolean));
+            const niches = new Set(products.map((item) => item.niche).filter(Boolean));
+            const withMultipleImages = products.filter((item) => Number(item.image_count) > 1).length;
+            statsRow.innerHTML = `
+                <div class="stat"><strong>${products.length}</strong><span>Live products</span></div>
+                <div class="stat"><strong>${types.size}</strong><span>Product types</span></div>
+                <div class="stat"><strong>${withMultipleImages}</strong><span>Products with 2+ images</span></div>
+            `;
+        }
+
+        function populateControls(products) {
+            const types = ['All', ...new Set(products.map((item) => item.type).filter(Boolean))];
+            typeSelect.innerHTML = types.map((type) => `<option value="${escapeHtml(type)}">${escapeHtml(type === 'All' ? 'All types' : type)}</option>`).join('');
+
+            const niches = ['All', ...new Set(products.map((item) => item.niche).filter(Boolean))];
+            nichePills.innerHTML = niches.map((niche) => `
+                <button class="pill ${niche === 'All' ? 'active' : ''}" data-niche="${escapeHtml(niche)}" type="button">${escapeHtml(niche)}</button>
+            `).join('');
+            nichePills.querySelectorAll('.pill').forEach((pill) => {
+                pill.addEventListener('click', () => {
+                    state.niche = pill.dataset.niche || 'All';
+                    nichePills.querySelectorAll('.pill').forEach((btn) => btn.classList.toggle('active', btn === pill));
+                    renderProducts();
+                });
+            });
+        }
+
+        function filteredProducts() {
+            let items = [...state.products];
+
+            if (state.niche !== 'All') {
+                items = items.filter((item) => item.niche === state.niche);
+            }
+            if (state.type !== 'All') {
+                items = items.filter((item) => item.type === state.type);
+            }
+            if (state.imageFilter === 'multi') {
+                items = items.filter((item) => Number(item.image_count) > 1);
+            } else if (state.imageFilter === 'single') {
+                items = items.filter((item) => Number(item.image_count) <= 1);
+            }
+
+            const query = state.search.trim().toLowerCase();
+            if (query) {
+                items = items.filter((item) => {
+                    const haystack = [item.title, item.description, item.niche, item.type, ...(item.tags || [])].join(' ').toLowerCase();
+                    return haystack.includes(query);
+                });
+            }
+
+            switch (state.sort) {
+                case 'price-asc':
+                    items.sort((a, b) => parsePrice(a.price) - parsePrice(b.price));
+                    break;
+                case 'price-desc':
+                    items.sort((a, b) => parsePrice(b.price) - parsePrice(a.price));
+                    break;
+                case 'title':
+                    items.sort((a, b) => a.title.localeCompare(b.title));
+                    break;
+                default:
+                    items.sort((a, b) => {
+                        const nicheCompare = a.niche.localeCompare(b.niche);
+                        if (nicheCompare !== 0) return nicheCompare;
+                        const typeCompare = a.type.localeCompare(b.type);
+                        if (typeCompare !== 0) return typeCompare;
+                        return a.title.localeCompare(b.title);
+                    });
+            }
+
+            return items;
+        }
+
+        function renderProducts() {
+            const items = filteredProducts();
+            resultsSummary.textContent = `${items.length} product${items.length === 1 ? '' : 's'} shown from ${state.products.length} live listings.`;
+
+            if (!items.length) {
+                productGrid.innerHTML = '<div class="empty-state">No products match your current search or filters. Try clearing one of the filters above.</div>';
+                return;
+            }
+
+            productGrid.innerHTML = items.map((item) => {
+                const tags = (item.tags || []).slice(0, 3).map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`).join('');
+                return `
+                    <article class="product-card">
+                        <div class="product-image-wrap">
+                            <img class="product-image" loading="lazy" src="${escapeHtml(item.hero_image || '')}" alt="${escapeHtml(item.title)}" onerror="this.style.opacity='0.25'; this.alt='Image unavailable';">
+                            <div class="image-badge">${escapeHtml(item.type || 'Product')}</div>
+                        </div>
+                        <div class="product-body">
+                            <div class="meta-row">
+                                <span class="badge">${escapeHtml(item.niche || 'Featured')}</span>
+                                <span class="price">${escapeHtml(item.price || 'See Etsy')}</span>
+                            </div>
+                            <h3 class="product-title">${escapeHtml(item.title)}</h3>
+                            <p class="product-desc">${escapeHtml(truncate(item.description || 'Shop this Entrepreneur Studios product on Etsy.'))}</p>
+                            <div class="product-tags">${tags}</div>
+                            <div class="card-actions">
+                                <span class="micro">${escapeHtml(String(item.variant_count || 0))} variant${Number(item.variant_count) === 1 ? '' : 's'} · ${escapeHtml(String(item.image_count || 0))} image${Number(item.image_count) === 1 ? '' : 's'}</span>
+                                <a class="shop-btn" href="${escapeHtml(item.etsy_url)}" target="_blank" rel="noopener noreferrer">View</a>
+                            </div>
+                        </div>
+                    </article>
+                `;
+            }).join('');
+        }
+
+        async function loadStorefront() {
+            try {
+                const response = await fetch('/storefront-catalog.json', { cache: 'no-store' });
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                const payload = await response.json();
+                state.products = payload.products || [];
+                setStats(state.products);
+                populateControls(state.products);
+                renderProducts();
+            } catch (error) {
+                console.error(error);
+                resultsSummary.textContent = 'Storefront catalog could not be loaded.';
+                productGrid.innerHTML = '<div class="empty-state">The catalog is temporarily unavailable. Please refresh the page or visit the Etsy shop directly.</div>';
+            }
+        }
+
+        searchInput.addEventListener('input', (event) => {
+            state.search = event.target.value || '';
+            renderProducts();
+        });
+        typeSelect.addEventListener('change', (event) => {
+            state.type = event.target.value || 'All';
+            renderProducts();
+        });
+        sortSelect.addEventListener('change', (event) => {
+            state.sort = event.target.value || 'featured';
+            renderProducts();
+        });
+        imageSelect.addEventListener('change', (event) => {
+            state.imageFilter = event.target.value || 'all';
+            renderProducts();
+        });
+
+        loadStorefront();
+    </script>
 </body>
 </html>
